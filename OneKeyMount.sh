@@ -34,6 +34,7 @@ MSG_EN=(
     [all_disks]="Current status of all disks:"
     [found_disks]="Found %d unmounted disk(s):"
     [select_disk]="Please select the disk to operate on (1-%d):"
+    [disk_label]="Disk"    
     [input_number]="Enter number: "
     [invalid_selection]="Invalid selection. Please enter a number between 1 and %d."
     [step2_title]="=== Step 2: Select operation mode ==="
