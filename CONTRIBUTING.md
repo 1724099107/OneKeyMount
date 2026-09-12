@@ -11,3 +11,6 @@ workflow and conventions used by the project.
    ```bash
    git clone https://github.com/<your-username>/OneKeyMount.git
    cd OneKeyMount
+3.Create a feature branch:
+```bash
+   git checkout -b feature/my-feature
