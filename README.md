@@ -5,11 +5,15 @@ A safe, interactive Bash script for mounting unmounted block devices on Linux �
 ![Shell](https://img.shields.io/badge/shell-bash-4EAA25?logo=gnu-bash&logoColor=white)
 ![Platform](https://img.shields.io/badge/platform-Linux-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
+![ShellCheck](https://img.shields.io/badge/shellcheck-passing-brightgreen)
+
+> **中文文档：** [CREADME.md](CREADME.md)
 
 ---
 
 ## Table of Contents
 
+- [Quick Start](#quick-start)
 - [Features](#features)
 - [Requirements](#requirements)
 - [Installation](#installation)
@@ -24,9 +28,25 @@ A safe, interactive Bash script for mounting unmounted block devices on Linux �
 
 ---
 
+## Quick Start
+
+```bash
+git clone https://github.com/1724099107/OneKeyMount.git
+cd OneKeyMount
+chmod +x OneKeyMount.sh
+sudo ./OneKeyMount.sh
+```
+
+That's it — the script will guide you through the rest and ask whether you want English or Chinese.
+
+> **Language:** The script supports **English** and **Chinese** prompts. You will be asked to choose at startup.
+
+---
+
 ## Features
 
 - 🔍 **Auto-detects unmounted disks** — scans `sd*`, `vd*`, `nvme*`, `mmcblk*`, and `hd*` devices
+- 🌐 **Bilingual interface** — English and Chinese prompts, selected at runtime
 - 🧭 **Two operation modes**
   - **Mount existing partition** — preserves data, detects the real filesystem type
   - **Repartition & format** — wipes the disk, creates a GPT partition, and formats it as `ext4`
@@ -34,16 +54,16 @@ A safe, interactive Bash script for mounting unmounted block devices on Linux �
 - 🛡️ **Safety first**
   - Requires root
   - Backs up `/etc/fstab` before every change
-  - Refuses to mount on `/` or non-absolute paths
-  - Cleans stale `fstab` entries by UUID or mount point
+  - Refuses to mount on `/`, non-absolute paths, or directories inside an existing mount
+  - Cleans stale `fstab` entries by UUID or mount point using field-exact matching
 - 🧩 **Broad device support** — correct partition naming for `nvme*` and `mmcblk*` (`pN` suffix)
-- 🎨 **Readable colored output** with interactive prompts and confirmations
+- 🎨 **Readable colored output** with interactive prompts and confirmation
 
 ---
 
 ## Requirements
 
-- Linux with `bash` 4.0+
+- Linux with `bash` 4.0+ (for associative arrays)
 - Root privileges (or `sudo`)
 - The following utilities available in `$PATH`:
 
@@ -55,7 +75,7 @@ A safe, interactive Bash script for mounting unmounted block devices on Linux �
 | `findmnt`    | Detect mount status by source device      |
 | `mountpoint` | Verify a directory is a mount point       |
 | `partprobe`  | Re-read the partition table               |
-| `udevadm`    | Wait for device node settlement           |
+| `udevadm`    | Wait for device node settlement (optional)|
 | `mkfs.ext4`  | Format new partitions                     |
 | `awk`, `sed`, `grep` | Text processing                   |
 
@@ -84,10 +104,19 @@ sudo pacman -S parted util-linux e2fsprogs
 
 ## Installation
 
-Download the script directly:
+Clone the repository:
 
 ```bash
-bash (curl -fsSL -o https://github.com/1724099107/OneKeyMount/OneKeyMount.sh)
+git clone https://github.com/1724099107/OneKeyMount.git
+cd OneKeyMount
+chmod +x OneKeyMount.sh
+```
+
+Or download the script directly:
+
+```bash
+curl -fsSL -o OneKeyMount.sh https://raw.githubusercontent.com/1724099107/OneKeyMount/main/OneKeyMount.sh
+chmod +x OneKeyMount.sh
 ```
 
 ---
@@ -110,51 +139,68 @@ The script walks through five interactive steps:
 4. **Confirm** — type `yes` to proceed
 5. **Done** — the script mounts the device and appends an `fstab` entry
 
-### Example session
+### Example session (English)
 
 ```
-=== 步骤 1: 选择要挂载的磁盘 ===
-正在扫描未挂载的磁盘...
-找到 1 个未挂载的磁盘:
+Please select language / 请选择语言:
+  1) English
+  2) 中文
+Choice / 选择 (1/2): 1
+
+=== Step 1: Select a disk to mount ===
+Scanning for unmounted disks...
+Found 1 unmounted disk(s):
 
 [1] /dev/sdb
-磁盘 /dev/sdb:
+Disk /dev/sdb:
   NAME   SIZE TYPE FSTYPE MOUNTPOINT
   sdb    100G disk
   └─sdb1 100G part ext4
 
-请选择要操作的磁盘编号 (1-1):
-输入编号: 1
+Please select the disk to operate on (1-1):
+Enter number: 1
 
-=== 步骤 2: 选择操作方式 ===
-检测到磁盘 /dev/sdb 已有 1 个分区
-  1) 挂载现有分区（不格式化，保留数据）
-  2) 清空并重新分区格式化（⚠️ 将丢失所有数据）
+=== Step 2: Select operation mode ===
+Disk /dev/sdb has 1 existing partition(s)
+  1) Mount an existing partition (keep data)
+  2) Wipe, repartition and format (WARNING: all data will be lost)
 
-请选择操作方式 (1 或 2): 1
+Select operation mode (1 or 2): 1
 
-=== 步骤 3: 输入挂载目录 ===
-请输入挂载目录路径 (例如: /data, /mnt/storage): /data
+=== Step 3: Enter mount directory ===
+Mount directory path (e.g. /data, /mnt/storage): /data
 
-=== 步骤 4: 确认操作 ===
-即将执行以下操作:
-  磁盘: /dev/sdb (100G)
-  挂载目录: /data
-  操作: 挂载现有分区 /dev/sdb1（数据保留）
+=== Step 4: Confirm operation ===
+About to perform the following:
+  Disk: /dev/sdb (100G)
+  Mount point: /data
+  Action: Mount existing partition /dev/sdb1 (data preserved)
 
-确认继续? (输入 yes 继续): yes
+Confirm and continue? (type 'yes' to proceed): yes
 
-=== 步骤 5: 执行操作 ===
-已备份 /etc/fstab 到: /etc/fstab.backup.20250101_120000
-挂载现有分区 /dev/sdb1...
-✓ 挂载成功: /dev/sdb1 -> /data
-✓ 已写入 /etc/fstab (fstype=ext4)
+=== Step 5: Executing ===
+Backed up /etc/fstab to: /etc/fstab.backup.20250101_120000
+Mounting partition...
+Mount success: /dev/sdb1 -> /data
+Written to /etc/fstab (fstype=ext4)
 
-=== 操作完成 ===
-✓ 磁盘 sdb 已成功挂载到 /data
+=== Operation completed ===
+Mount information:
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sdb1        98G   24K   93G   1% /data
+
+Disk partition information:
+NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sdb      8:16   0  100G  0 disk
+└─sdb1   8:17   0  100G  0 part /data
+
+fstab configuration:
+UUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx /data ext4 defaults,noatime 0 0
+
+Disk sdb has been mounted to /data
+Hint: run 'mount -a' to verify the fstab configuration
+Hint: fstab backup file: /etc/fstab.backup.20250101_120000
 ```
-
-> **Note:** The interactive prompts are currently in Chinese. Contributions to add i18n support are welcome — see the [Roadmap](#roadmap).
 
 ---
 
@@ -184,11 +230,11 @@ The script walks through five interactive steps:
 
 ### Device naming rules
 
-| Device pattern | Partition name |
-|----------------|----------------|
-| `/dev/sdX`     | `/dev/sdX1`    |
-| `/dev/vdX`     | `/dev/vdX1`    |
-| `/dev/hdX`     | `/dev/hdX1`    |
+| Device pattern | Partition name   |
+|----------------|------------------|
+| `/dev/sdX`     | `/dev/sdX1`      |
+| `/dev/vdX`     | `/dev/vdX1`      |
+| `/dev/hdX`     | `/dev/hdX1`      |
 | `/dev/nvmeXnY` | `/dev/nvmeXnYp1` |
 | `/dev/mmcblkX` | `/dev/mmcblkXp1` |
 
@@ -197,7 +243,7 @@ The script walks through five interactive steps:
 ## Safety Notes
 
 - ⚠️ **Data loss warning:** Mode 2 irreversibly destroys all data on the selected disk. Always double-check your target before typing `yes`.
-- 💾 **Backups:** `/etc/fstab` is backed up to `/etc/fstab.backup.YYYYmmdd_HHMMSS` on every run.
+- 💾 **Backups:** `/etc/fstab` is backed up to `/etc/fstab.backup.YYYYmmdd_HHMMSS` on every run, in both modes.
 - ✅ **Verification:** After the script completes, validate the new `fstab` entry with:
 
   ```bash
@@ -205,32 +251,34 @@ The script walks through five interactive steps:
   ```
 
   If the command produces no output and exits successfully, the configuration is valid.
-- 🔧 **Recovery:** If `/etc/fstab` becomes corrupted, boot into rescue mode or use a live USB and restore from the backup file:
+- 🔧 **Recovery:** If `/etc/fstab` becomes corrupted, restore from the backup file:
 
   ```bash
   sudo cp /etc/fstab.backup.YYYYmmdd_HHMMSS /etc/fstab
   ```
+- 🛑 **Interrupts:** If you press `Ctrl+C`, the script aborts immediately. If you abort in Mode 2 during the partitioning step, re-run the script to complete the operation.
 
 ---
 
 ## Limitations
 
-- The script currently only formats new partitions as **ext4**. Support for `xfs`, `btrfs`, and other filesystems is not yet implemented.
-- Only the **first partition** is mounted in Mode 1. Multi-partition disks require manual handling.
+- Mode 2 formats new partitions as **ext4** only. Support for `xfs`, `btrfs`, and others is not yet implemented.
+- Mode 1 mounts only the **first partition** found on the disk. Multi-partition disks require manual handling.
 - Not designed for LVM, LUKS, RAID, or ZFS volumes.
-- The script uses `parted` and assumes the target disk is not in use by any LVM/RAID subsystem.
-- Interactive prompts are currently Chinese-only.
+- The script assumes the target disk is not in use by any LVM/RAID subsystem.
+- Interactive prompts are bilingual (EN/ZH). Additional locales are on the roadmap.
 
 ---
 
 ## Roadmap
 
-- [ ] Add i18n / English prompts
+- [ ] Additional language packs (Japanese, Korean, …)
 - [ ] Support `xfs` and `btrfs` for Mode 2
 - [ ] Optional LVM volume creation
 - [ ] Dry-run mode (`--dry-run`)
 - [ ] Non-interactive mode for provisioning tools (Ansible, cloud-init)
-- [ ] `shellcheck` CI workflow
+- [x] `shellcheck` CI workflow
+- [x] Bilingual interface (EN / ZH)
 
 ---
 
@@ -244,6 +292,8 @@ Issues and pull requests are welcome! Please:
 4. Commit your changes: `git commit -am 'Add my feature'`
 5. Push to the branch: `git push origin feature/my-feature`
 6. Open a Pull Request
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ### Code style
 
