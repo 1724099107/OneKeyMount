@@ -277,7 +277,6 @@ Hint: fstab backup file: /etc/fstab.backup.20250101_120000
 - [ ] Optional LVM volume creation
 - [ ] Dry-run mode (`--dry-run`)
 - [ ] Non-interactive mode for provisioning tools (Ansible, cloud-init)
-- [x] `shellcheck` CI workflow
 - [x] Bilingual interface (EN / ZH)
 
 ---
