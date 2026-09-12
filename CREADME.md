@@ -5,7 +5,7 @@
 ![Shell](https://img.shields.io/badge/shell-bash-4EAA25?logo=gnu-bash&logoColor=white)
 ![Platform](https://img.shields.io/badge/platform-Linux-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
-![ShellCheck](https://img.shields.io/badge/shellcheck-passing-brightgreen)
+![ShellCheck](https://img.shields.io/badge/shellcheck-ready-blue)
 
 > **English docs:** [README.md](README.md)
 
