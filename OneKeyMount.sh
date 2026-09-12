@@ -264,10 +264,9 @@ get_unmounted_disks() {
     done < <(lsblk -Pdn -o NAME,SIZE,TYPE 2>/dev/null)
 }
 
-# Show detailed info for a disk
 show_disk_info() {
     local dev="$1"
-    echo -e "${BLUE}$( [ "$LANG_CHOICE" = "zh" ] && echo "磁盘" || echo "Disk" ) /dev/$dev:${NC}"
+    echo -e "${BLUE}$(t disk_label) /dev/$dev:${NC}"
     lsblk "/dev/$dev" -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINT 2>/dev/null | sed 's/^/  /'
 }
 
