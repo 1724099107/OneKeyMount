@@ -87,7 +87,7 @@ sudo pacman -S parted util-linux e2fsprogs
 Clone the repository:
 
 ```bash
-git clone https://github.com/<your-username>/OneKeyMount.git
+git clone https://github.com/1724099107/OneKeyMount
 cd OneKeyMount
 chmod +x OneKeyMount.sh
 ```
@@ -95,7 +95,7 @@ chmod +x OneKeyMount.sh
 Or download the script directly:
 
 ```bash
-curl -fsSL -o OneKeyMount.sh https://raw.githubusercontent.com/<your-username>/OneKeyMount/main/OneKeyMount.sh
+curl -fsSL -o https://github.com/1724099107/OneKeyMount/OneKeyMount.sh
 chmod +x OneKeyMount.sh
 ```
 
