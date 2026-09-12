@@ -108,6 +108,7 @@ MSG_ZH=(
     [all_disks]="当前所有磁盘状态:"
     [found_disks]="找到 %d 个未挂载的磁盘:"
     [select_disk]="请选择要操作的磁盘编号 (1-%d):"
+    [disk_label]="磁盘"   
     [input_number]="输入编号: "
     [invalid_selection]="无效选择，请输入 1-%d 之间的数字"
     [step2_title]="=== 步骤 2: 选择操作方式 ==="
