@@ -225,7 +225,7 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 # ---------- Dependency check ----------
-for cmd in lsblk parted blkid findmnt mountpoint partprobe mkfs.ext4 awk sed grep; do
+for cmd in lsblk parted blkid findmnt mountpoint partprobe mkfs.ext4 wipefs awk sed grep; do
     if ! command -v "$cmd" >/dev/null 2>&1; then
         say missing_cmd "$cmd"
         exit 1
