@@ -13,4 +13,4 @@ workflow and conventions used by the project.
    cd OneKeyMount
 3.Create a feature branch:
 ```bash
-   git checkout -b feature/my-feature
+git checkout -b feature/my-feature
