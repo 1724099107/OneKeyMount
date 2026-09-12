@@ -1,0 +1,18 @@
+# Runtime artifacts
+*.backup
+*.backup.*
+fstab.backup.*
+*.tmp
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Shellcheck cache
+.shellcheck/
+
+# Local test outputs
+/tmp/
